@@ -120,20 +120,27 @@ window.onload = () => {
     // ------------------------------------------------------------------
     // 3. Logika Hamburger Menu (Tambahan)
     // ------------------------------------------------------------------
-    const menuButton = document.querySelector('.md\\:hidden.text-2xl.cursor-pointer');
-    const navMenu = document.querySelector('#nav-list');
-    
-    // Anda perlu memberikan ID="nav-list" pada elemen <ul> di HTML,
-    // dan menambahkan logika toggle class untuk menampilkan menu di HP.
-    if (menuButton && navMenu) {
-        menuButton.addEventListener('click', () => {
-            // Contoh logika: toggle class 'hidden' di menu
-            navMenu.classList.toggle('hidden');
-            // Menambahkan style untuk mobile agar menu terlihat penuh
-            navMenu.classList.toggle('flex');
-            navMenu.classList.toggle('flex-col');
-            navMenu.classList.toggle('absolute');
-            // Tambahkan style mobile lainnya sesuai kebutuhan desain
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const iconOpen = document.getElementById('icon-open');
+    const iconClose = document.getElementById('icon-close');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    if (mobileBtn && mobileMenu) {
+        // Fungsi Toggle Menu
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            iconOpen.classList.toggle('hidden');
+            iconClose.classList.toggle('hidden');
+        });
+
+        // Tutup menu saat salah satu link diklik
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden'); // Sembunyikan menu
+                iconOpen.classList.remove('hidden'); // Munculkan ikon hamburger
+                iconClose.classList.add('hidden');   // Sembunyikan ikon X
+            });
         });
     }
 
