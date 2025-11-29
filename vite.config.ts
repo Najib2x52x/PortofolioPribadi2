@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
-import { resolve } from 'path'
 
 export default defineConfig({
     plugins: [
@@ -8,12 +7,12 @@ export default defineConfig({
     ],
     build: {
         rollupOptions: {
-        input: {
-            // Halaman utama
-            main: resolve(__dirname, 'index.html'),
-            // Halaman detail (PENTING: ini agar file ini ikut di-build ke Vercel)
-            detail: resolve(__dirname, 'detail-project.html'),
-        },
+            input: {
+                // Halaman utama
+                main: './index.html',
+                // Halaman detail (PENTING: ini agar file ini ikut di-build ke Vercel)
+                detail: './detail-project.html',
+            },
         },
     },
 })

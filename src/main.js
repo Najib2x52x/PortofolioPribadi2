@@ -144,4 +144,137 @@ window.onload = () => {
         });
     }
 
+    // ... (kode sebelumnya tetap ada) ...
+
+    // ------------------------------------------------------------------
+    // 4. LOGIKA FORMULIR KONTAK (AJAX + NOTIFIKASI)
+    // ------------------------------------------------------------------
+    const contactForm = document.getElementById('contactForm');
+    const btnSubmit = document.getElementById('btnSubmit');
+
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Mencegah reload halaman
+
+            // 1. Ubah tombol jadi "Loading..."
+            const originalBtnContent = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<span>Mengirim... ⏳</span>';
+            btnSubmit.disabled = true;
+            btnSubmit.classList.add('opacity-70', 'cursor-not-allowed');
+
+            // 2. Kirim data via Fetch API
+            const formData = new FormData(contactForm);
+
+            fetch(contactForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json' // Penting agar FormSubmit tidak redirect
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // SUKSES: Tampilkan Notifikasi SweetAlert
+                    Swal.fire({
+                        title: 'Berhasil Terkirim!',
+                        text: 'Terima kasih telah menghubungi saya. Saya akan membalas pesan Anda secepatnya.',
+                        icon: 'success',
+                        confirmButtonColor: '#3b82f6', // Warna biru sesuai tema
+                        confirmButtonText: 'Oke, Siap!'
+                    });
+                    
+                    // Reset formulir
+                    contactForm.reset();
+                } else {
+                    // GAGAL dari Server
+                    throw new Error('Terjadi kesalahan pada server');
+                }
+            })
+            .catch(error => {
+                // ERROR Jaringan / Lainnya
+                Swal.fire({
+                    title: 'Gagal Mengirim',
+                    text: 'Sepertinya ada masalah koneksi. Silakan coba lagi nanti atau hubungi via WhatsApp.',
+                    icon: 'error',
+                    confirmButtonColor: '#ef4444'
+                });
+            })
+            .finally(() => {
+                // 3. Kembalikan tombol seperti semula
+                btnSubmit.innerHTML = originalBtnContent;
+                btnSubmit.disabled = false;
+                btnSubmit.classList.remove('opacity-70', 'cursor-not-allowed');
+            });
+        });
+    }
+
+    // ... (kode sebelumnya) ...
+
+    // ------------------------------------------------------------------
+    // 5. LOGIKA INTERAKSI KONTAK (Copy Email, WA, Maps)
+    // ------------------------------------------------------------------
+
+    // A. Fitur Copy Email
+    const btnCopyEmail = document.getElementById('btn-copy-email');
+    const textEmail = document.getElementById('text-email');
+
+    if (btnCopyEmail && textEmail) {
+        btnCopyEmail.addEventListener('click', () => {
+            // Ambil teks email
+            const emailValue = textEmail.innerText.trim();
+            
+            // Salin ke clipboard
+            navigator.clipboard.writeText(emailValue).then(() => {
+                // Tampilkan Toast Notification (Notifikasi Kecil di Pojok)
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Email berhasil disalin!'
+                });
+            }).catch(err => {
+                console.error('Gagal menyalin: ', err);
+            });
+        });
+    }
+
+    // B. Fitur Link WhatsApp
+    const btnWa = document.getElementById('btn-wa');
+    if (btnWa) {
+        btnWa.addEventListener('click', () => {
+            // GANTI NOMOR DI SINI (Format: Kode Negara + Nomor, tanpa + atau 0 di depan)
+            // Contoh: 6281234567890
+            const phoneNumber = "6281234567890"; 
+            const message = "Halo, saya melihat portofolio Anda dan ingin berdiskusi.";
+            
+            // Buka tab baru ke API WhatsApp
+            window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
+        });
+    }
+
+    // C. Fitur Google Maps
+    // C. Fitur Google Maps (Pakai Link Share Langsung)
+    const btnMap = document.getElementById('btn-map');
+    if (btnMap) {
+        btnMap.addEventListener('click', () => {
+            // Masukkan link Google Maps yang kamu punya di dalam tanda kutip
+            const myMapLink = "https://maps.app.goo.gl/L5x65ob9cv8aHDvKA"; 
+            
+            // Buka di tab baru
+            window.open(myMapLink, '_blank');
+        });
+    }
+
+// ... penutup kurung kurawal window.onload
+
 };
